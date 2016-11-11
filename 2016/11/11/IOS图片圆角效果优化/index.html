@@ -22,7 +22,7 @@
 
 * Any layer with a mask (layer.mask)
 * Any layer with">
-<meta property="og:updated_time" content="2016-11-11T08:34:15.000Z">
+<meta property="og:updated_time" content="2016-11-11T08:38:28.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="IOS图片圆角效果优化">
 <meta name="twitter:description" content="显示为圆角的图片现在很常见，之前使用的时候一直没有考虑过效率问题，因为系统提供了属性，直接设置就完事了。（ps：在优化前我一直是使用这种方法来实现的，简单快捷）导致性能不好的原因主要是引起了 offscreen rendering.
@@ -188,30 +188,21 @@
 imageView.layer.cornerRadius = 20;
 imageView.masksToBounds = YES;
 </pre>
-当然也有说设置 shouldRasterize 为YES,但是如果是在一个界面有“大量”的圆角图片的 tableView 或者 conllectionView 中时，是没有效果的。
 
-### 2、使用贝塞尔曲线画出 imageView
-在分类中写一个方法，使用的时候直接调用该方法。
-<per>
-
+<p>当然也有说设置 shouldRasterize 为YES,但是如果是在一个界面有“大量”的圆角图片的 tableView 或者 conllectionView 中时，是没有效果的。</p>
+<h3 id="2、使用贝塞尔曲线画出-imageView"><a href="#2、使用贝塞尔曲线画出-imageView" class="headerlink" title="2、使用贝塞尔曲线画出 imageView"></a>2、使用贝塞尔曲线画出 imageView</h3><p>在分类中写一个方法，使用的时候直接调用该方法。</p>
+<pre>
     self.clipsToBounds = YES;
-
     UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(0, 0, radius * 2, radius * 2) cornerRadius:radius];
     CAShapeLayer *maskLayer = [CAShapeLayer layer];
     maskLayer.path = path.CGPath;
     self.layer.mask = maskLayer;
-</per>
+</pre>
 
-### 3、处理成圆角图片
-在图片显示到界面上时，先把图片处理成员圆角图片。大方向有两种方案：服务器处理和客户端处理。服务器返回圆角图片在此我就不多说了，使用的是不会有性能问题的。我们来说说客户端将图片处理成圆角的方案。
-#### a.从网络上拿到图片时将图片处理成圆角存放在本地
-#### b.从网络上拿到图片存放在本地是原图，加载到内存或缓存时处理成圆角
-QQ 采用就是从服务器获取存在本地是原图，显示的时候是圆角图片的方案的。
-  优点：界面不卡顿、代码量一般
-
-  缺点：此方法比较消耗 CPU 资源 ，代码需要时刻维护（如结合第三框架来修改，需要随时维护处理图片的代码）
-
-Tip: 以上两种处理图片的方法可以结合 SDWebImage 的第三方框架来实现，在对应的位置去处理图片就行。
+<h3 id="3、处理成圆角图片"><a href="#3、处理成圆角图片" class="headerlink" title="3、处理成圆角图片"></a>3、处理成圆角图片</h3><p>在图片显示到界面上时，先把图片处理成员圆角图片。大方向有两种方案：服务器处理和客户端处理。服务器返回圆角图片在此我就不多说了，使用的是不会有性能问题的。我们来说说客户端将图片处理成圆角的方案。</p>
+<h4 id="a-从网络上拿到图片时将图片处理成圆角存放在本地"><a href="#a-从网络上拿到图片时将图片处理成圆角存放在本地" class="headerlink" title="a.从网络上拿到图片时将图片处理成圆角存放在本地"></a>a.从网络上拿到图片时将图片处理成圆角存放在本地</h4><h4 id="b-从网络上拿到图片存放在本地是原图，加载到内存或缓存时处理成圆角"><a href="#b-从网络上拿到图片存放在本地是原图，加载到内存或缓存时处理成圆角" class="headerlink" title="b.从网络上拿到图片存放在本地是原图，加载到内存或缓存时处理成圆角"></a>b.从网络上拿到图片存放在本地是原图，加载到内存或缓存时处理成圆角</h4><p>QQ 采用就是从服务器获取存在本地是原图，显示的时候是圆角图片的方案的。<br>  优点：界面不卡顿、代码量一般</p>
+<p>  缺点：此方法比较消耗 CPU 资源 ，代码需要时刻维护（如结合第三框架来修改，需要随时维护处理图片的代码）</p>
+<p>Tip: 以上两种处理图片的方法可以结合 SDWebImage 的第三方框架来实现，在对应的位置去处理图片就行。</p>
 <pre>
 UIGraphicsBeginImageContextWithOptions(avatarImageView.bounds.size, NO, [UIScreen mainScreen].scale);
 [[UIBezierPath bezierPathWithRoundedRect:avatarImageView.bounds
@@ -220,6 +211,7 @@ UIGraphicsBeginImageContextWithOptions(avatarImageView.bounds.size, NO, [UIScree
 avatarImageView.image = UIGraphicsGetImageFromCurrentImageContext();
 UIGraphicsEndImageContext();
 </pre>
+
 
 <h3 id="4、在显示图片的控件上加上一个圆角遮罩"><a href="#4、在显示图片的控件上加上一个圆角遮罩" class="headerlink" title="4、在显示图片的控件上加上一个圆角遮罩"></a>4、在显示图片的控件上加上一个圆角遮罩</h3><p>  优点：性能好，不卡顿，代码量比较少</p>
 <p>Tip: 需要注意圆角遮罩的颜色，必须与背景色相同，比如和 cell 的背景色相同。点击状态和非点击状态需要变换颜色与其保持一致。</p>
