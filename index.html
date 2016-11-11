@@ -157,7 +157,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>显示为圆角的图片现在很常见，之前使用的时候一直没有考虑过效率问题，因为系统提供了属性，直接设置就完事了。（ps：在优化前我一直是使用这种方法来实现的，简单快捷）导致性能不好的原因主要是引起了 offscreen rendering.</p>
+        <p>显示为圆角的图片现在很常见，之前使用的时候一直没有考虑过效率问题，因为系统提供了属性，直接设置就完事了。（ps：在优化前我一直是使用这种方法来实现的，简单快捷）导致性能不好的原因主要是引起了 offscreen rendering。</p>
 <p>造成 offscreen rendering的原因有：</p>
 <pre>
 * Any layer with a mask (layer.mask)
@@ -167,9 +167,12 @@
 * Any layer with layer.shouldRasterize being true
 * Any layer with layer.cornerRadius, layer.edgeAntialiasingMask, layer.allowsEdgeAntialiasing
 </pre>
-优化的过程中尽量不要使用上面的属性或者方法
-### 1、使用系统的属性
-设置圆角的半径，设置超出部分剪裁。
+优化的过程中尽量不要使用上面的属性或者方法。
+
+<pre>
+</pre>
+
+<h3 id="1、使用系统的属性"><a href="#1、使用系统的属性" class="headerlink" title="1、使用系统的属性"></a>1、使用系统的属性</h3><p>设置圆角的半径，设置超出部分剪裁。</p>
 <pre>
 imageView.layer.cornerRadius = 20;
 imageView.masksToBounds = YES;
