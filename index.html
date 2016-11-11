@@ -175,6 +175,7 @@ imageView.layer.cornerRadius = 20;
 imageView.masksToBounds = YES;
 </pre>
 当然也有说设置 shouldRasterize 为YES,但是如果是在一个界面有“大量”的圆角图片的 tableView 或者 conllectionView 中时，是没有效果的。
+
 ### 2、使用贝塞尔曲线画出 imageView
 在分类中写一个方法，使用的时候直接调用该方法。
 <per>
@@ -186,6 +187,7 @@ imageView.masksToBounds = YES;
     maskLayer.path = path.CGPath;
     self.layer.mask = maskLayer;
 </per>
+
 ### 3、处理成圆角图片
 在图片显示到界面上时，先把图片处理成员圆角图片。大方向有两种方案：服务器处理和客户端处理。服务器返回圆角图片在此我就不多说了，使用的是不会有性能问题的。我们来说说客户端将图片处理成圆角的方案。
 #### a.从网络上拿到图片时将图片处理成圆角存放在本地
