@@ -12,7 +12,8 @@
 2、查看 mac 电脑的关机时间1$ last | grep shutdown
 3、使用命令打开文件1$ open index.md
 指定应用打开文件1$ open -a MacDown index.md
-Tip: 文件名、应用名不区分大小写，应用名字不需要后缀">
+Tip: 文件名、应用名不区分大小写，应用名字不需要后缀.
+使用 shell 命令统计代码行数find . -name">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MAC 电脑常用指令">
 <meta property="og:url" content="https://zhuguojie-unnoo.github.io/2016/11/10/MAC-电脑常用指令/index.html">
@@ -21,15 +22,17 @@ Tip: 文件名、应用名不区分大小写，应用名字不需要后缀">
 2、查看 mac 电脑的关机时间1$ last | grep shutdown
 3、使用命令打开文件1$ open index.md
 指定应用打开文件1$ open -a MacDown index.md
-Tip: 文件名、应用名不区分大小写，应用名字不需要后缀">
-<meta property="og:updated_time" content="2016-11-10T10:09:31.000Z">
+Tip: 文件名、应用名不区分大小写，应用名字不需要后缀.
+使用 shell 命令统计代码行数find . -name">
+<meta property="og:updated_time" content="2016-11-11T07:23:04.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MAC 电脑常用指令">
 <meta name="twitter:description" content="1、查看 mac 电脑的开机时间1$ last | grep reboot
 2、查看 mac 电脑的关机时间1$ last | grep shutdown
 3、使用命令打开文件1$ open index.md
 指定应用打开文件1$ open -a MacDown index.md
-Tip: 文件名、应用名不区分大小写，应用名字不需要后缀">
+Tip: 文件名、应用名不区分大小写，应用名字不需要后缀.
+使用 shell 命令统计代码行数find . -name">
   
     <link rel="alternative" href="/atom.xml" title="zhuguojie-unnoo" type="application/atom+xml">
   
@@ -175,7 +178,9 @@ Tip: 文件名、应用名不区分大小写，应用名字不需要后缀">
 <h3 id="2、查看-mac-电脑的关机时间"><a href="#2、查看-mac-电脑的关机时间" class="headerlink" title="2、查看 mac 电脑的关机时间"></a>2、查看 mac 电脑的关机时间</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ last | grep shutdown</div></pre></td></tr></table></figure>
 <h3 id="3、使用命令打开文件"><a href="#3、使用命令打开文件" class="headerlink" title="3、使用命令打开文件"></a>3、使用命令打开文件</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ open index.md</div></pre></td></tr></table></figure>
 <h4 id="指定应用打开文件"><a href="#指定应用打开文件" class="headerlink" title="指定应用打开文件"></a>指定应用打开文件</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ open <span class="_">-a</span> MacDown index.md</div></pre></td></tr></table></figure>
-<p>Tip: 文件名、应用名不区分大小写，应用名字不需要后缀</p>
+<p>Tip: 文件名、应用名不区分大小写，应用名字不需要后缀.</p>
+<h3 id="使用-shell-命令统计代码行数"><a href="#使用-shell-命令统计代码行数" class="headerlink" title="使用 shell 命令统计代码行数"></a>使用 shell 命令统计代码行数</h3><p><pre><br>find . -name “*.py” |xargs grep -v “^$”|wc -l<br></pre><br>统计 ios 开发代码行数</p>
+<p><pre><br>find . -name “.m” -or- -name “*.h” |xargs grep -v “^$”|wc -l<br></pre><br>Tip: grep -v “^$” 是去掉空行</p>
 
       
     </div>
