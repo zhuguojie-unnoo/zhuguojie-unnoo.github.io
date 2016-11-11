@@ -6,14 +6,33 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="https://zhuguojie-unnoo.github.io">
-  <title>Tag: 笔记 | zhuguojie-unnoo</title>
+  <title>IOS图片圆角效果优化 | zhuguojie-unnoo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="zhuguojie-unnoo">
-<meta property="og:url" content="https://zhuguojie-unnoo.github.io/tags/笔记/index.html">
+  <meta name="description" content="显示为圆角的图片现在很常见，之前使用的时候一直没有考虑过效率问题，因为系统提供了属性，直接设置就完事了。（ps：在优化前我一直是使用这种方法来实现的，简单快捷）导致性能不好的原因主要是引起了 offscreen rendering.
+造成 offscreen rendering的原因有：
+
+
+Any layer with a mask (layer.mask)
+Any layer with lay">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IOS图片圆角效果优化">
+<meta property="og:url" content="https://zhuguojie-unnoo.github.io/2016/11/11/IOS图片圆角效果优化/index.html">
 <meta property="og:site_name" content="zhuguojie-unnoo">
+<meta property="og:description" content="显示为圆角的图片现在很常见，之前使用的时候一直没有考虑过效率问题，因为系统提供了属性，直接设置就完事了。（ps：在优化前我一直是使用这种方法来实现的，简单快捷）导致性能不好的原因主要是引起了 offscreen rendering.
+造成 offscreen rendering的原因有：
+
+
+Any layer with a mask (layer.mask)
+Any layer with lay">
+<meta property="og:updated_time" content="2016-11-11T07:07:32.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="zhuguojie-unnoo">
+<meta name="twitter:title" content="IOS图片圆角效果优化">
+<meta name="twitter:description" content="显示为圆角的图片现在很常见，之前使用的时候一直没有考虑过效率问题，因为系统提供了属性，直接设置就完事了。（ps：在优化前我一直是使用这种方法来实现的，简单快捷）导致性能不好的原因主要是引起了 offscreen rendering.
+造成 offscreen rendering的原因有：
+
+
+Any layer with a mask (layer.mask)
+Any layer with lay">
   
     <link rel="alternative" href="/atom.xml" title="zhuguojie-unnoo" type="application/atom+xml">
   
@@ -137,118 +156,130 @@
 </nav>
 
       <div class="body-wrap">
+        <article id="post-IOS图片圆角效果优化" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
         
   
+    <h1 class="article-title" itemprop="name">
+      IOS图片圆角效果优化
+    </h1>
   
+
+      </header>
     
-    
+    <div class="article-entry" itemprop="articleBody">
       
+        <p>显示为圆角的图片现在很常见，之前使用的时候一直没有考虑过效率问题，因为系统提供了属性，直接设置就完事了。（ps：在优化前我一直是使用这种方法来实现的，简单快捷）导致性能不好的原因主要是引起了 offscreen rendering.</p>
+<p>造成 offscreen rendering的原因有：</p>
+<p><pre></pre></p>
+<ul>
+<li>Any layer with a mask (layer.mask)</li>
+<li>Any layer with layer.masksToBounds being true</li>
+<li>Any layer with layer.allowsGroupOpacity set to YES and layer.opacity is less than 1.0</li>
+<li>Any layer with a drop shadow (layer.shadow*).</li>
+<li>Any layer with layer.shouldRasterize being true</li>
+<li><p>Any layer with layer.cornerRadius, layer.edgeAntialiasingMask, layer.allowsEdgeAntialiasing<br><br>优化的过程中尽量不要使用上面的属性或者方法</p>
+<h3 id="1、使用系统的属性"><a href="#1、使用系统的属性" class="headerlink" title="1、使用系统的属性"></a>1、使用系统的属性</h3><p>设置圆角的半径，设置超出部分剪裁。<br><pre><br>imageView.layer.cornerRadius = 20;<br>imageView.masksToBounds = YES;<br></pre><br>当然也有说设置 shouldRasterize 为YES,但是如果是在一个界面有“大量”的圆角图片的 tableView 或者 conllectionView 中时，是没有效果的。</p>
+<h3 id="2、使用贝塞尔曲线画出-imageView"><a href="#2、使用贝塞尔曲线画出-imageView" class="headerlink" title="2、使用贝塞尔曲线画出 imageView"></a>2、使用贝塞尔曲线画出 imageView</h3><p>在分类中写一个方法，使用的时候直接调用该方法。</p>
+<per>
+
+<p>  self.clipsToBounds = YES;</p>
+<p>  UIBezierPath <em>path = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(0, 0, radius </em> 2, radius <em> 2) cornerRadius:radius];<br>  CAShapeLayer </em>maskLayer = [CAShapeLayer layer];<br>  maskLayer.path = path.CGPath;<br>  self.layer.mask = maskLayer;<br></p></per><p></p>
+<h3 id="3、处理成圆角图片"><a href="#3、处理成圆角图片" class="headerlink" title="3、处理成圆角图片"></a>3、处理成圆角图片</h3><p>在图片显示到界面上时，先把图片处理成员圆角图片。大方向有两种方案：服务器处理和客户端处理。服务器返回圆角图片在此我就不多说了，使用的是不会有性能问题的。我们来说说客户端将图片处理成圆角的方案。</p>
+<h4 id="a-从网络上拿到图片时将图片处理成圆角存放在本地"><a href="#a-从网络上拿到图片时将图片处理成圆角存放在本地" class="headerlink" title="a.从网络上拿到图片时将图片处理成圆角存放在本地"></a>a.从网络上拿到图片时将图片处理成圆角存放在本地</h4><h4 id="b-从网络上拿到图片存放在本地是原图，加载到内存或缓存时处理成圆角"><a href="#b-从网络上拿到图片存放在本地是原图，加载到内存或缓存时处理成圆角" class="headerlink" title="b.从网络上拿到图片存放在本地是原图，加载到内存或缓存时处理成圆角"></a>b.从网络上拿到图片存放在本地是原图，加载到内存或缓存时处理成圆角</h4><p>QQ 采用就是从服务器获取存在本地是原图，显示的时候是圆角图片的方案的。<br>优点：界面不卡顿、代码量一般</p>
+<p>缺点：此方法比较消耗 CPU 资源 ，代码需要时刻维护（如结合第三框架来修改，需要随时维护处理图片的代码）</p>
+</li>
+</ul>
+<p>Tip: 以上两种处理图片的方法可以结合 SDWebImage 的第三方框架来实现，在对应的位置去处理图片就行。<br>具体的源码会在 demo 体现。</p>
+<h3 id="4、在显示图片的控件上加上一个圆角遮罩"><a href="#4、在显示图片的控件上加上一个圆角遮罩" class="headerlink" title="4、在显示图片的控件上加上一个圆角遮罩"></a>4、在显示图片的控件上加上一个圆角遮罩</h3><p>  优点：性能好，不卡顿，代码量比较少</p>
+<p>Tip: 需要注意圆角遮罩的颜色，必须与背景色相同，比如和 cell 的背景色相同。点击状态和非点击状态需要变换颜色与其保持一致。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>   优化是权衡各种方案的利弊，然后结合自己的实际情况，选择对于自己项目来说最优的方案。</p>
+<p>比如：界面上圆角图片比较少的情况（只有几个）那么直接使用第一种或者第二种都行，这几张图片的消耗不足于引起界面的卡顿。</p>
+
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2016" class="archive-year">2016</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2016/11/11/IOS图片圆角效果优化/" class="archive-article-date">
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2016/11/11/IOS图片圆角效果优化/" class="archive-article-date">
   	<time datetime="2016-11-11T06:03:22.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-11</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/11/11/IOS图片圆角效果优化/">IOS图片圆角效果优化</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags"></i>
 		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
 	</div>
 
-          
+      
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2016/11/10/MAC-电脑使用小常识/" class="archive-article-date">
-  	<time datetime="2016-11-10T09:52:19.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-10</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/11/10/MAC-电脑使用小常识/">MAC 电脑使用小常识</a>
-    </h1>
-  
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags"></i>
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2016/11/10/MAC-电脑使用小常识/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">MAC 电脑使用小常识</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+<div class="share_jia">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">Share to: &nbsp; </span>
+		<a class="jiathis_button_facebook"></a> 
+	    <a class="jiathis_button_twitter"></a>
+	    <a class="jiathis_button_plus"></a> 
+	    <a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+    <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
 	</div>
+	<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
 
-          
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2016/11/10/MAC-电脑常用指令/" class="archive-article-date">
-  	<time datetime="2016-11-10T09:47:19.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-10</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/11/10/MAC-电脑常用指令/">MAC 电脑常用指令</a>
-    </h1>
-  
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags"></i>
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
-	</div>
 
-          
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
 
-    
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="IOS图片圆角效果优化" data-title="IOS图片圆角效果优化" data-url="https://zhuguojie-unnoo.github.io/2016/11/11/IOS图片圆角效果优化/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"zhuguojie-unnoo"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
 
 
       </div>
@@ -271,9 +302,9 @@
 		mathjax: false,
 		animate: true,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: true,
 		root: "/",
