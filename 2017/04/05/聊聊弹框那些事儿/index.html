@@ -6,14 +6,24 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="https://zhuguojie-unnoo.github.io">
-  <title>Tag: 笔记 | zhuguojie-unnoo</title>
+  <title>聊聊弹框那些事儿 | zhuguojie-unnoo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="zhuguojie-unnoo">
-<meta property="og:url" content="https://zhuguojie-unnoo.github.io/tags/笔记/index.html">
+  <meta name="description" content="UIAlertView、UIAlertController
+苹果官方 API 中建议开发者在 iOS8 及其以后的系统版本中使用 UIAlertController。接下来的篇幅将主要讨论 UIAlertController 使用时的注意点、苹果为这样调整的原因和这个调整引发的思考。
+UIAlertController 使用时的注意点对于如何使用 UIAlertController 这个不过过多的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="聊聊弹框那些事儿">
+<meta property="og:url" content="https://zhuguojie-unnoo.github.io/2017/04/05/聊聊弹框那些事儿/index.html">
 <meta property="og:site_name" content="zhuguojie-unnoo">
+<meta property="og:description" content="UIAlertView、UIAlertController
+苹果官方 API 中建议开发者在 iOS8 及其以后的系统版本中使用 UIAlertController。接下来的篇幅将主要讨论 UIAlertController 使用时的注意点、苹果为这样调整的原因和这个调整引发的思考。
+UIAlertController 使用时的注意点对于如何使用 UIAlertController 这个不过过多的">
+<meta property="og:updated_time" content="2017-04-05T08:30:22.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="zhuguojie-unnoo">
+<meta name="twitter:title" content="聊聊弹框那些事儿">
+<meta name="twitter:description" content="UIAlertView、UIAlertController
+苹果官方 API 中建议开发者在 iOS8 及其以后的系统版本中使用 UIAlertController。接下来的篇幅将主要讨论 UIAlertController 使用时的注意点、苹果为这样调整的原因和这个调整引发的思考。
+UIAlertController 使用时的注意点对于如何使用 UIAlertController 这个不过过多的">
   
     <link rel="alternative" href="/atom.xml" title="zhuguojie-unnoo" type="application/atom+xml">
   
@@ -137,160 +147,130 @@
 </nav>
 
       <div class="body-wrap">
+        <article id="post-聊聊弹框那些事儿" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
         
   
+    <h1 class="article-title" itemprop="name">
+      聊聊弹框那些事儿
+    </h1>
   
+
+      </header>
     
-    
+    <div class="article-entry" itemprop="articleBody">
       
+        <p>UIAlertView、UIAlertController</p>
+<p>苹果官方 API 中建议开发者在 iOS8 及其以后的系统版本中使用 UIAlertController。接下来的篇幅将主要讨论 UIAlertController 使用时的注意点、苹果为这样调整的原因和这个调整引发的思考。</p>
+<h2 id="UIAlertController-使用时的注意点"><a href="#UIAlertController-使用时的注意点" class="headerlink" title="UIAlertController 使用时的注意点"></a>UIAlertController 使用时的注意点</h2><p>对于如何使用 UIAlertController 这个不过过多的介绍，它实质就是一个控制器，只需像对待其他控制器一样，把他弹出来便可。至于设置参数和事件这里不做描述，看一下 API 里面的方法和属性便知。</p>
+<pre>
+[self presentViewController:alertViewController animated:YES completion:nil];
+</pre>
+
+<p>当将它的 preferredStyle 设置为 UIAlertControllerStyleActionSheet 的时，在 iPad（iPhone 中正常） 中一定要设置 ActionSheet 的弹出位置。否则会报错，控制台输出的错误信息如下：</p>
+<pre>
+ *** Terminating app due to uncaught exception 'NSGenericException', reason: 'Your application has presented a UIAlertController (<uialertcontroller: 0x1028be580="">) of style UIAlertControllerStyleActionSheet. The modalPresentationStyle of a UIAlertController with this style is UIModalPresentationPopover. You must provide location information for this popover through the alert controller's popoverPresentationController. You must provide either a sourceView and sourceRect or a barButtonItem.  If this information is not known when you present the alert controller, you may provide it in the UIPopoverPresentationControllerDelegate method -prepareForPopoverPresentation.'
+</uialertcontroller:></pre>
+
+<p>设置 ActionSheet 的位置</p>
+<pre>
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        UIPopoverPresentationController *popover = controller.popoverPresentationController;
+        popover.permittedArrowDirections = 0;
+        popover.sourceView = controller.view;
+        popover.sourceRect = (CGRect){SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 0, 0};
+    }
+</pre>
+
+<h2 id="苹果为这样调整的原因"><a href="#苹果为这样调整的原因" class="headerlink" title="苹果为这样调整的原因"></a>苹果为这样调整的原因</h2><p>要说出苹果修改的真实意图，目前我的道行还够，不过通过在使用过程中的一些体验和经验，这里简单的分析一下。</p>
+<h3 id="1、简化代码、降低维护成本"><a href="#1、简化代码、降低维护成本" class="headerlink" title="1、简化代码、降低维护成本"></a>1、简化代码、降低维护成本</h3><p>iOS8 以前使用弹出式对话框时需要使用 UIAlertView 和 UIActionSheet，当需要互相切换他们的样式的时候，非常麻烦，不亚于重写。但是如果使用 UIAlertController 只需要改变 preferredStyle 参数的值变可以做到。</p>
+<h3 id="2、简化逻辑"><a href="#2、简化逻辑" class="headerlink" title="2、简化逻辑"></a>2、简化逻辑</h3><p>iOS8 以前我们需要设置条目的事件时，需要设置代理并在回调中判断其 index 或者是一些我们设置的标识，其次如果界面有多个弹框时，还需要判断是那个弹框传来的事件。但是使用 UIAlertController 后，条目的事件直接写到该条目的 Block 中，因此省去不少逻辑判断代码。</p>
+<h2 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h2><p>我不知你们曾经在设计一些自定义弹框或者一些类似弹框效果的控件时是有这样设计过：使用 UIWindow 然后将相关控件添加到上面，使用的时候直接调用一个方法显示出来。我之前有这么做过。但是在使用 UIAlertController 后，我觉得我们应该调整一下了。为什么不使用 UIAlertController 的设计思路呢？如果使用了控制器，其实会给我们省去很多不必要的问题，比如， window 的 level 问题，输入框键盘的window 和当前 window 的关系问题，生命周期的问题。<br>另外，方便设计，比如你需要一个背景是半透明的，点击背景是消失，只需要创建一个父类，把这个功能做进去，然后其他的继承于他便可。</p>
+
       
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2017" class="archive-year">2017</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2017/04/05/聊聊弹框那些事儿/" class="archive-article-date">
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2017/04/05/聊聊弹框那些事儿/" class="archive-article-date">
   	<time datetime="2017-04-05T08:25:08.000Z" itemprop="datePublished"><i class="icon-clock"></i>2017-04-05</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2017/04/05/聊聊弹框那些事儿/">聊聊弹框那些事儿</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags"></i>
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
       
-        </div></section>
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags"></i>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
+	</div>
+
       
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2016" class="archive-year">2016</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2016/11/11/IOS图片圆角效果优化/" class="archive-article-date">
-  	<time datetime="2016-11-11T06:03:22.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-11</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/11/11/IOS图片圆角效果优化/">IOS图片圆角效果优化</a>
-    </h1>
-  
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags"></i>
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2016/11/10/MAC-电脑使用小常识/" class="archive-article-date">
-  	<time datetime="2016-11-10T09:52:19.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-10</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/11/10/MAC-电脑使用小常识/">MAC 电脑使用小常识</a>
-    </h1>
-  
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags"></i>
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
+  
+<nav id="article-nav">
+  
+  
+    <a href="/2016/11/16/心灵鸡汤/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">心灵鸡汤</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+
+
+<div class="share_jia">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">Share to: &nbsp; </span>
+		<a class="jiathis_button_facebook"></a> 
+	    <a class="jiathis_button_twitter"></a>
+	    <a class="jiathis_button_plus"></a> 
+	    <a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+    <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
 	</div>
+	<script type="text/javascript" src="//v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
 
-          
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2016/11/10/MAC-电脑常用指令/" class="archive-article-date">
-  	<time datetime="2016-11-10T09:47:19.000Z" itemprop="datePublished"><i class="icon-clock"></i>2016-11-10</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2016/11/10/MAC-电脑常用指令/">MAC 电脑常用指令</a>
-    </h1>
-  
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags"></i>
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/笔记/">笔记</a></li></ul>
-	</div>
 
-          
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
 
-    
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="聊聊弹框那些事儿" data-title="聊聊弹框那些事儿" data-url="https://zhuguojie-unnoo.github.io/2017/04/05/聊聊弹框那些事儿/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"zhuguojie-unnoo"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
 
 
       </div>
@@ -313,9 +293,9 @@
 		mathjax: false,
 		animate: true,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: true,
 		root: "/",
