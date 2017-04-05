@@ -10,20 +10,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="UIAlertView、UIAlertController
 苹果官方 API 中建议开发者在 iOS8 及其以后的系统版本中使用 UIAlertController。接下来的篇幅将主要讨论 UIAlertController 使用时的注意点、苹果为这样调整的原因和这个调整引发的思考。
-UIAlertController 使用时的注意点对于如何使用 UIAlertController 这个不过过多的">
+1、UIAlertController 使用时的注意点对于如何使用 UIAlertController 这个不过过">
 <meta property="og:type" content="article">
 <meta property="og:title" content="聊聊弹框那些事儿">
 <meta property="og:url" content="https://zhuguojie-unnoo.github.io/2017/04/05/聊聊弹框那些事儿/index.html">
 <meta property="og:site_name" content="zhuguojie-unnoo">
 <meta property="og:description" content="UIAlertView、UIAlertController
 苹果官方 API 中建议开发者在 iOS8 及其以后的系统版本中使用 UIAlertController。接下来的篇幅将主要讨论 UIAlertController 使用时的注意点、苹果为这样调整的原因和这个调整引发的思考。
-UIAlertController 使用时的注意点对于如何使用 UIAlertController 这个不过过多的">
-<meta property="og:updated_time" content="2017-04-05T08:30:22.000Z">
+1、UIAlertController 使用时的注意点对于如何使用 UIAlertController 这个不过过">
+<meta property="og:updated_time" content="2017-04-05T08:33:36.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="聊聊弹框那些事儿">
 <meta name="twitter:description" content="UIAlertView、UIAlertController
 苹果官方 API 中建议开发者在 iOS8 及其以后的系统版本中使用 UIAlertController。接下来的篇幅将主要讨论 UIAlertController 使用时的注意点、苹果为这样调整的原因和这个调整引发的思考。
-UIAlertController 使用时的注意点对于如何使用 UIAlertController 这个不过过多的">
+1、UIAlertController 使用时的注意点对于如何使用 UIAlertController 这个不过过">
   
     <link rel="alternative" href="/atom.xml" title="zhuguojie-unnoo" type="application/atom+xml">
   
@@ -167,7 +167,7 @@ UIAlertController 使用时的注意点对于如何使用 UIAlertController 这�
       
         <p>UIAlertView、UIAlertController</p>
 <p>苹果官方 API 中建议开发者在 iOS8 及其以后的系统版本中使用 UIAlertController。接下来的篇幅将主要讨论 UIAlertController 使用时的注意点、苹果为这样调整的原因和这个调整引发的思考。</p>
-<h2 id="UIAlertController-使用时的注意点"><a href="#UIAlertController-使用时的注意点" class="headerlink" title="UIAlertController 使用时的注意点"></a>UIAlertController 使用时的注意点</h2><p>对于如何使用 UIAlertController 这个不过过多的介绍，它实质就是一个控制器，只需像对待其他控制器一样，把他弹出来便可。至于设置参数和事件这里不做描述，看一下 API 里面的方法和属性便知。</p>
+<h2 id="1、UIAlertController-使用时的注意点"><a href="#1、UIAlertController-使用时的注意点" class="headerlink" title="1、UIAlertController 使用时的注意点"></a>1、UIAlertController 使用时的注意点</h2><p>对于如何使用 UIAlertController 这个不过过多的介绍，它实质就是一个控制器，只需像对待其他控制器一样，把他弹出来便可。至于设置参数和事件这里不做描述，看一下 API 里面的方法和属性便知。</p>
 <pre>
 [self presentViewController:alertViewController animated:YES completion:nil];
 </pre>
@@ -187,10 +187,10 @@ UIAlertController 使用时的注意点对于如何使用 UIAlertController 这�
     }
 </pre>
 
-<h2 id="苹果为这样调整的原因"><a href="#苹果为这样调整的原因" class="headerlink" title="苹果为这样调整的原因"></a>苹果为这样调整的原因</h2><p>要说出苹果修改的真实意图，目前我的道行还够，不过通过在使用过程中的一些体验和经验，这里简单的分析一下。</p>
-<h3 id="1、简化代码、降低维护成本"><a href="#1、简化代码、降低维护成本" class="headerlink" title="1、简化代码、降低维护成本"></a>1、简化代码、降低维护成本</h3><p>iOS8 以前使用弹出式对话框时需要使用 UIAlertView 和 UIActionSheet，当需要互相切换他们的样式的时候，非常麻烦，不亚于重写。但是如果使用 UIAlertController 只需要改变 preferredStyle 参数的值变可以做到。</p>
-<h3 id="2、简化逻辑"><a href="#2、简化逻辑" class="headerlink" title="2、简化逻辑"></a>2、简化逻辑</h3><p>iOS8 以前我们需要设置条目的事件时，需要设置代理并在回调中判断其 index 或者是一些我们设置的标识，其次如果界面有多个弹框时，还需要判断是那个弹框传来的事件。但是使用 UIAlertController 后，条目的事件直接写到该条目的 Block 中，因此省去不少逻辑判断代码。</p>
-<h2 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h2><p>我不知你们曾经在设计一些自定义弹框或者一些类似弹框效果的控件时是有这样设计过：使用 UIWindow 然后将相关控件添加到上面，使用的时候直接调用一个方法显示出来。我之前有这么做过。但是在使用 UIAlertController 后，我觉得我们应该调整一下了。为什么不使用 UIAlertController 的设计思路呢？如果使用了控制器，其实会给我们省去很多不必要的问题，比如， window 的 level 问题，输入框键盘的window 和当前 window 的关系问题，生命周期的问题。<br>另外，方便设计，比如你需要一个背景是半透明的，点击背景是消失，只需要创建一个父类，把这个功能做进去，然后其他的继承于他便可。</p>
+<h2 id="2、苹果为这样调整的原因"><a href="#2、苹果为这样调整的原因" class="headerlink" title="2、苹果为这样调整的原因"></a>2、苹果为这样调整的原因</h2><p>要说出苹果修改的真实意图，目前我的道行还够，不过通过在使用过程中的一些体验和经验，这里简单的分析一下。</p>
+<h3 id="a、简化代码、降低维护成本"><a href="#a、简化代码、降低维护成本" class="headerlink" title="a、简化代码、降低维护成本"></a>a、简化代码、降低维护成本</h3><p>iOS8 以前使用弹出式对话框时需要使用 UIAlertView 和 UIActionSheet，当需要互相切换他们的样式的时候，非常麻烦，不亚于重写。但是如果使用 UIAlertController 只需要改变 preferredStyle 参数的值变可以做到。</p>
+<h3 id="b、简化逻辑"><a href="#b、简化逻辑" class="headerlink" title="b、简化逻辑"></a>b、简化逻辑</h3><p>iOS8 以前我们需要设置条目的事件时，需要设置代理并在回调中判断其 index 或者是一些我们设置的标识，其次如果界面有多个弹框时，还需要判断是那个弹框传来的事件。但是使用 UIAlertController 后，条目的事件直接写到该条目的 Block 中，因此省去不少逻辑判断代码。</p>
+<h2 id="3、思考"><a href="#3、思考" class="headerlink" title="3、思考"></a>3、思考</h2><p>我不知你们曾经在设计一些自定义弹框或者一些类似弹框效果的控件时是有这样设计过：使用 UIWindow 然后将相关控件添加到上面，使用的时候直接调用一个方法显示出来。我之前有这么做过。但是在使用 UIAlertController 后，我觉得我们应该调整一下了。为什么不使用 UIAlertController 的设计思路呢？如果使用了控制器，其实会给我们省去很多不必要的问题，比如， window 的 level 问题，输入框键盘的window 和当前 window 的关系问题，生命周期的问题。<br>另外，方便设计，比如你需要一个背景是半透明的，点击背景是消失，只需要创建一个父类，把这个功能做进去，然后其他的继承于他便可。</p>
 
       
     </div>
