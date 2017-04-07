@@ -126,6 +126,57 @@
       <div class="body-wrap">
         
   
+    <article id="post-如何解决升级到Xcode8后音频播放一直打印日志" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/04/07/如何解决升级到Xcode8后音频播放一直打印日志/">如何解决升级到Xcode8后音频播放一直打印日志</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h3><p>从 Xode7 升级到 Xcode8 ，控制台会输入很多日志，非常烦人。比如：</p>
+<pre>
+254: AQDefaultDevice (173): skipping input stream 0 0 0x0
+</pre>
+
+<p>他因为我们在应用中播放音乐时导致的，一旦触发，基本上是一秒就打印一次。</p>
+<h3 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h3><h4 id="1、在-Xcode-中，选择-Product-gt-Scheme-gt-Edite-Scheme"><a href="#1、在-Xcode-中，选择-Product-gt-Scheme-gt-Edite-Scheme" class="headerlink" title="1、在 Xcode 中，选择 Product -&gt; Scheme -&gt;Edite Scheme;"></a>1、在 Xcode 中，选择 Product -&gt; Scheme -&gt;Edite Scheme;</h4><h4 id="2、选择-Arguments"><a href="#2、选择-Arguments" class="headerlink" title="2、选择 Arguments;"></a>2、选择 Arguments;</h4><h4 id="3、在Environment-Variables添加一个环境变量-OS-ACTIVITY-MODE-设置值为”disable”"><a href="#3、在Environment-Variables添加一个环境变量-OS-ACTIVITY-MODE-设置值为”disable”" class="headerlink" title="3、在Environment Variables添加一个环境变量 OS_ACTIVITY_MODE 设置值为”disable”."></a>3、在Environment Variables添加一个环境变量 OS_ACTIVITY_MODE 设置值为”disable”.</h4>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      <a href="/2017/04/07/如何解决升级到Xcode8后音频播放一直打印日志/" class="archive-article-date">
+  	<time datetime="2017-04-07T06:52:48.000Z" itemprop="datePublished"><i class="icon-clock"></i>2017-04-07</time>
+</a>
+      
+      
+
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+
+
+
+
+
+
+
+
+
+
+  
     <article id="post-聊聊弹框那些事儿" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-inner">
     
